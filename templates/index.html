@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- =========================================
+         МЕТА-ДАННЫЕ СТРАНИЦЫ
+         ========================================= -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cinema dream</title>
+
+    <!-- =========================================
+         ПОДКЛЮЧЕНИЕ СТИЛЕЙ
+         - style.css: основной стиль сайта
+         - index.css: стили для главной страницы
+         ========================================= -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
+    <!-- Иконка сайта -->
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+</head>
+
+<body>
+<header>
+    <!-- =========================================
+         HEADER
+         - Логотип
+         - Основная навигация по категориям
+         - Поисковая строка
+         - Кнопки входа и регистрации
+         ========================================= -->
+    <div class="header_top">
+        <a class="header_logo" href="{{ url_for('index') }}"></a>
+        <div class="header_links">
+            <a class="header_link" href="{{ url_for('content', category='movie') }}">Кино</a>
+            <a class="header_link" href="{{ url_for('content', category='anime') }}">Аниме</a>
+            <a class="header_link" href="{{ url_for('content', category='series') }}">Сериалы</a>
+        </div>
+    </div>
+
+    <!-- =========================================
+         ПОИСКОВАЯ СТРОКА
+         - input для поиска по названию
+         - ul для вывода результатов поиска через JS
+         ========================================= -->
+    <div class="search_bar_container">
+        <input type="text" class="search_bar" placeholder="Поиск по названию" id="search_input" autocomplete="off">
+        <ul class="list_search" id="search_results"></ul>
+    </div>
+
+    <!-- =========================================
+         КНОПКИ ВХОДА И РЕГИСТРАЦИИ
+         ========================================= -->
+    <div class="header_buttons">
+        <button class="regIn">РЕГИСТРАЦИЯ</button>
+        <button class="logIn">ВХОД</button>
+    </div>
+</header>
+
+<main class="main">
+    <!-- =========================================
+         РАЗДЕЛ: ФИЛЬМЫ
+         Отображение всех фильмов из БД
+         ========================================= -->
+    <section class="media_type">
+        <a class="type_name" href="{{ url_for('content', category='movie') }}">ФИЛЬМЫ</a>
+        <div class="content">
+            {% for movie in movies %}
+            <!-- Блок отдельного фильма -->
+            <a class="content__block" href="{{ url_for('player', content_type='movie', item_id=movie.id) }}">
+                <img class="content__img" src="{{ url_for('cover', filename=movie.cover_image) }}" alt="{{ movie.title }}">
+                <p class="content__name">{{ movie.title }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- =========================================
+         РАЗДЕЛ: СЕРИАЛЫ
+         Отображение всех сериалов из БД
+         ========================================= -->
+    <section class="media_type">
+        <a class="type_name" href="{{ url_for('content', category='series') }}">СЕРИАЛЫ</a>
+        <div class="content">
+            {% for s in series %}
+            <a class="content__block" href="{{ url_for('player', content_type='series', item_id=s.id) }}">
+                <img class="content__img" src="{{ url_for('cover', filename=s.cover_image) }}" alt="{{ s.title }}">
+                <p class="content__name">{{ s.title }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- =========================================
+         РАЗДЕЛ: АНИМЕ
+         Отображение всех аниме из БД
+         ========================================= -->
+    <section class="media_type">
+        <a class="type_name" href="{{ url_for('content', category='anime') }}">АНИМЕ</a>
+        <div class="content">
+            {% for a in anime %}
+            <a class="content__block" href="{{ url_for('player', content_type='anime', item_id=a.id) }}">
+                <img class="content__img" src="{{ url_for('cover', filename=a.cover_image) }}" alt="{{ a.title }}">
+                <p class="content__name">{{ a.title }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+
+<footer>
+    <!-- =========================================
+         ФУТЕР
+         - Ссылки на спонсоров и поддержку
+         - Логотип
+         - Правовая информация
+         ========================================= -->
+    <div class="links">
+        <a href="{{ url_for('index') }}">СТАТЬ СПОНСОРОМ</a>
+        <a href="{{ url_for('index') }}">ТЕХ. ПОДДЕРЖКА</a>
+    </div>
+    <a class="footer_logo" href="{{ url_for('index') }}"></a>
+    <div class="footer_text">
+        Все материалы на сайте представлены исключительно для ознакомительного просмотра.
+        Сайт Cinema-Dream не хранит видеофайлы, а только предоставляет ссылки на сторонние ресурсы.
+        Все права на фильмы, сериалы и аниме принадлежат их законным правообладателям.
+        Если вы являетесь правообладателем и хотите удалить материал — свяжитесь с нами через форму обратной связи.
+    </div>
+</footer>
+
+<!-- =========================================
+     ПОДКЛЮЧЕНИЕ JS
+     - search_bar.js: поиск по названию
+     - content_limit.js: ограничение отображения блоков контента в строке на странице
+     ========================================= -->
+<script src="{{ url_for('static', filename='js/search_bar.js') }}"></script>
+<script src="{{ url_for('static', filename='js/content_limit.js') }}"></script>
+</body>
+</html>

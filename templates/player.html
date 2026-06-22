@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- =========================================
+         МЕТА-ДАННЫЕ СТРАНИЦЫ
+         ========================================= -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }}</title>
+
+    <!-- =========================================
+         ПОДКЛЮЧЕНИЕ СТИЛЕЙ
+         - style.css: общий стиль сайта
+         - player.css: стили для страницы плеера
+         ========================================= -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/player.css') }}">
+
+    <!-- Иконка сайта -->
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+</head>
+
+<body>
+<header>
+    <!-- =========================================
+         HEADER
+         - Логотип
+         - Основная навигация по категориям
+         - Поисковая строка
+         - Кнопки входа и регистрации
+         ========================================= -->
+    <div class="header_top">
+        <a class="header_logo" href="{{ url_for('index') }}"></a>
+        <div class="header_links">
+            <a class="header_link" href="{{ url_for('content', category='movie') }}">Кино</a>
+            <a class="header_link" href="{{ url_for('content', category='anime') }}">Аниме</a>
+            <a class="header_link" href="{{ url_for('content', category='series') }}">Сериалы</a>
+        </div>
+    </div>
+
+    <!-- =========================================
+         ПОИСКОВАЯ СТРОКА
+         - input для поиска по названию
+         - ul для вывода результатов поиска через JS
+         ========================================= -->
+    <div class="search_bar_container">
+        <input type="text" class="search_bar" placeholder="Поиск по названию" id="search_input" autocomplete="off">
+        <ul class="list_search" id="search_results"></ul>
+    </div>
+
+    <!-- =========================================
+         КНОПКИ ВХОДА И РЕГИСТРАЦИИ
+         ========================================= -->
+    <div class="header_buttons">
+        <button class="regIn">РЕГИСТРАЦИЯ</button>
+        <button class="logIn">ВХОД</button>
+    </div>
+</header>
+
+<main class="main">
+    <!-- =========================================
+         МЕТАДАННЫЕ ФИЛЬМА/СЕРИАЛА/АНИМЕ
+         - Отображение основной информации: обложка, год,
+         страна, жанр, режиссер, актеры, длительность, бюджет,
+         сборы, рейтинг, возрастное ограничение
+         ========================================= -->
+    <section class="metadata">
+        <div class="cover">
+            <img src="{{ url_for('cover', filename=item.cover_image) }}" alt="cover">
+        </div>
+        <div class="info">
+            <h1 class="info__title">{{ item.title }}</h1>
+            <div class="info__block">
+                <!-- Каждая строка отображает отдельное свойство -->
+                <div class="info__block__row">
+                    <p class="info__block__row__type">Год выпуска:</p>
+                    <p class="info__block__row__contain">{{ item.year or "-" }}</p>
+                </div>
+                <div class="info__block__row">
+                    <p class="info__block__row__type">Страна:</p>
+                    <p class="info__block__row__contain">{{ item.country or "-" }}</p>
+                </div>
+                <div class="info__block__row">
+                    <p class="info__block__row__type">Жанр:</p>
+                    <p class="info__block__row__contain">{{ genres|join(', ') if genres else '-' }}</p>
+                </div>
+                <div class="info__block__row">
+                    <p class="info__block__row__type">Режиссер:</p>
+                    <p class="info__block__row__contain">{{ item.director or "-" }}</p>
+                </div>
+                <div class="info__block__row">
+                    <p class="info__block__row__type">Актеры:</p>
+                    <p class="info__block__row__contain">{{ item.actors or "-" }}</p>
+                </div>
+                <div class="info__block__row">
+                    <p class="info__block__row__type">Длительность:</p>
+                    <p class="info__block__row__contain">{{ item.duration or "-" }}</p>
+                </div>
+                <div class="info__block__row">
+                    <p class="info__block__row__type">Бюджет:</p>
+                    <p class="info__block__row__contain">{{ item.budget or "-" }}</p>
+                </div>
+                <div class="info__block__row">
+                    <p class="info__block__row__type">Сборы:</p>
+                    <p class="info__block__row__contain">{{ item.box_office or "-" }}</p>
+                </div>
+                <div class="info__block__row">
+                    <p class="info__block__row__type">Рейтинг:</p>
+                    <p class="info__block__row__contain">{{ item.rating or "-" }}</p>
+                </div>
+                <div class="info__block__row">
+                    <p class="info__block__row__type">Ограничение:</p>
+                    <p class="info__block__row__contain">{{ item.age_limit or "-" }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========================================
+         ПЛЕЕР
+         ========================================= -->
+    <section class="player">
+        <video id="moviePlayer" controls width="100%" preload="metadata">
+            <source src="/media/{{ video_file | urlencode }}" type="video/mp4">
+            Ваш браузер не поддерживает воспроизведение видео.
+        </video>
+    </section>
+
+    <!-- =========================================
+         ОПИСАНИЕ
+         ========================================= -->
+    <section class="description">
+        <p class="desc_title">Описание</p>
+        <p class="desc_text">{{ item.description or "-" }}</p>
+    </section>
+</main>
+
+<footer>
+    <!-- =========================================
+         ФУТЕР
+         - Ссылки на спонсоров и поддержку
+         - Логотип
+         - Правовая информация
+         ========================================= -->
+    <div class="links">
+        <a href="{{ url_for('index') }}">СТАТЬ СПОНСОРОМ</a>
+        <a href="{{ url_for('index') }}">ТЕХ. ПОДДЕРЖКА</a>
+    </div>
+    <a class="footer_logo" href="{{ url_for('index') }}"></a>
+    <div class="footer_text">
+        Все материалы на сайте представлены исключительно для ознакомительного просмотра.
+        Сайт Cinema-Dream не хранит видеофайлы, а только предоставляет ссылки на сторонние ресурсы.
+        Все права на фильмы, сериалы и аниме принадлежат их законным правообладателям.
+        Если вы являетесь правообладателем и хотите удалить материал — свяжитесь с нами через форму обратной связи.
+    </div>
+</footer>
+
+<!-- =========================================
+     ПОДКЛЮЧЕНИЕ JS
+     - search_bar.js: поиск по названию
+     ========================================= -->
+<script src="{{ url_for('static', filename='js/search_bar.js') }}"></script>
+</body>
+</html>
